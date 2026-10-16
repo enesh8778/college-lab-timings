@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>College Lab Timings</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="College Lab Timings home">
+      <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+      <span>College Lab Timings</span>
+    </a>
+    <span class="status"><span class="status-dot"></span> Student information</span>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="eyebrow">STUDENT RESOURCE</div>
+      <h1>Find your next lab.</h1>
+      <p>Lab schedules for your department, all in one simple place.</p>
+      <a class="primary-button" href="#timetable">View timetable <span aria-hidden="true">→</span></a>
+    </section>
+
+    <section class="content" id="timetable">
+      <div class="section-heading">
+        <div>
+          <div class="eyebrow">THIS WEEK</div>
+          <h2>Lab timetable</h2>
+          <p class="muted">Check the day, time, department and lab location.</p>
+        </div>
+        <div class="count-pill" id="result-count">Loading labs…</div>
+      </div>
+
+      <div class="filters">
+        <label class="search-box">
+          <span aria-hidden="true">⌕</span>
+          <input id="search" type="search" placeholder="Search labs or departments" aria-label="Search labs or departments">
+        </label>
+        <select id="day-filter" aria-label="Filter by day">
+          <option value="">All days</option>
+          <option>Monday</option><option>Tuesday</option><option>Wednesday</option>
+          <option>Thursday</option><option>Friday</option>
+        </select>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Lab</th><th>Department</th><th>Day</th><th>Time</th><th>Location</th></tr></thead>
+          <tbody id="lab-rows"><tr><td colspan="5" class="empty">Loading timetable…</td></tr></tbody>
+        </table>
+      </div>
+      <p class="note" id="last-updated">Schedule information is provided for student reference.</p>
+    </section>
+
+    <section class="info-grid">
+      <article class="info-card">
+        <div class="icon">01</div>
+        <h3>Before your lab</h3>
+        <p>Arrive a few minutes early and bring any required materials.</p>
+      </article>
+      <article class="info-card">
+        <div class="icon">02</div>
+        <h3>Check for updates</h3>
+        <p>Schedules may change. Check the latest information before attending.</p>
+      </article>
+      <article class="info-card">
+        <div class="icon">03</div>
+        <h3>Need help?</h3>
+        <p>Contact your department or lab in-charge for timetable questions.</p>
+      </article>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-brand"><span class="brand-mark small" aria-hidden="true"><i></i><i></i><i></i><i></i></span> College Lab Timings</div>
+    <span>Built for students · <span id="year"></span></span>
+  </footer>
+
+  <script>
+    const rows = document.getElementById("lab-rows");
+    const search = document.getElementById("search");
+    const dayFilter = document.getElementById("day-filter");
+    const count = document.getElementById("result-count");
+    let labs = [];
+
+    function renderLabs() {
+      const query = search.value.trim().toLowerCase();
+      const day = dayFilter.value;
+      const filtered = labs.filter(lab =>
+        [lab.lab, lab.department, lab.day, lab.time, lab.location]
+          .some(value => String(value).toLowerCase().includes(query)) &&
+        (!day || lab.day === day)
+      );
+
+      count.textContent = `${filtered.length} ${filtered.length === 1 ? "lab" : "labs"}`;
+      if (!filtered.length) {
+        rows.innerHTML = '<tr><td colspan="5" class="empty">No matching labs. Try another search.</td></tr>';
+        return;
+      }
+
+      rows.innerHTML = filtered.map(lab => `
+        <tr>
+          <td><span class="lab-symbol">▦</span><strong>${escapeHtml(lab.lab)}</strong></td>
+          <td>${escapeHtml(lab.department)}</td>
+          <td><span class="day-tag">${escapeHtml(lab.day)}</span></td>
+          <td>${escapeHtml(lab.time)}</td>
+          <td>${escapeHtml(lab.location)}</td>
+        </tr>`).join("");
+    }
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, char => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+      }[char]));
+    }
+
+    fetch("data.json")
+      .then(response => {
+        if (!response.ok) throw new Error("Could not load data.json");
+        return response.json();
+      })
+      .then(data => {
+        labs = data;
+        renderLabs();
+      })
+      .catch(() => {
+        count.textContent = "Timetable unavailable";
+        rows.innerHTML = '<tr><td colspan="5" class="empty">Could not load the timetable. Please check that data.json is uploaded beside index.html.</td></tr>';
+      });
+
+    search.addEventListener("input", renderLabs);
+    dayFilter.addEventListener("change", renderLabs);
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

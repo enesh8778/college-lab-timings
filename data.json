@@ -1,0 +1,44 @@
+[
+  {
+    "lab": "AI and ML Lab",
+    "department": "B.Sc AIML",
+    "day": "Monday",
+    "time": "10:00 AM - 12:00 PM",
+    "location": "Lab 1"
+  },
+  {
+    "lab": "Data Structures Lab",
+    "department": "B.Sc CS",
+    "day": "Tuesday",
+    "time": "02:00 PM - 04:00 PM",
+    "location": "Lab 2"
+  },
+  {
+    "lab": "Web Development Lab",
+    "department": "B.Sc CS",
+    "day": "Wednesday",
+    "time": "10:00 AM - 12:00 PM",
+    "location": "Lab 3"
+  },
+  {
+    "lab": "Database Lab",
+    "department": "B.Sc IT",
+    "day": "Thursday",
+    "time": "02:00 PM - 04:00 PM",
+    "location": "Lab 4"
+  },
+  {
+    "lab": "Operating Systems Lab",
+    "department": "B.Sc CS",
+    "day": "Friday",
+    "time": "10:00 AM - 12:00 PM",
+    "location": "Lab 5"
+  },
+  {
+    "lab": "Computer Networks Lab",
+    "department": "B.Sc IT",
+    "day": "Monday",
+    "time": "02:00 PM - 04:00 PM",
+    "location": "Lab 6"
+  }
+]
